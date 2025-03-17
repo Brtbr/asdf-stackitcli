@@ -42,7 +42,7 @@ download_release() {
 	filename="$2"
 
 	# TODO: Adapt the release URL convention for stackitcli
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	url="$GH_REPO/releases/download/v${version}/stackit-cli_${version}_$(get_arch)_$(get_cpu).tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -61,6 +61,7 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
+		chmod +x "$install_path/stackit"
 		# TODO: Assert stackitcli executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
@@ -71,4 +72,23 @@ install_version() {
 		rm -rf "$install_path"
 		fail "An error occurred while installing $TOOL_NAME $version."
 	)
+}
+
+get_cpu() {
+  local machine_hardware_name
+  machine_hardware_name=${ASDF_TELEPRESENCE_OVERWRITE_ARCH:-"$(uname -m)"}
+
+  case "$machine_hardware_name" in
+    'x86_64') local cpu_type="amd64" ;;
+    'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
+    'aarch64') local cpu_type="arm64" ;;
+    'armv7l') local cpu_type="arm" ;;
+    *) local cpu_type="$machine_hardware_name" ;;
+  esac
+
+  echo "$cpu_type"
+}
+
+get_arch() {
+  uname | tr '[:upper:]' '[:lower:]'
 }
