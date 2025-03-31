@@ -17,22 +17,22 @@ fail() {
 }
 
 get_cpu() {
-  local machine_hardware_name
-  machine_hardware_name=${ASDF_STACKITCLI_OVERWRITE_ARCH:-"$(uname -m)"}
+	local machine_hardware_name
+	machine_hardware_name=${ASDF_STACKITCLI_OVERWRITE_ARCH:-"$(uname -m)"}
 
-  case "$machine_hardware_name" in
-  'x86_64') local cpu_type="amd64" ;;
-  'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
-  'aarch64') local cpu_type="arm64" ;;
-  'armv7l') local cpu_type="arm" ;;
-  *) local cpu_type="$machine_hardware_name" ;;
-  esac
+	case "$machine_hardware_name" in
+	'x86_64') local cpu_type="amd64" ;;
+	'powerpc64le' | 'ppc64le') local cpu_type="ppc64le" ;;
+	'aarch64') local cpu_type="arm64" ;;
+	'armv7l') local cpu_type="arm" ;;
+	*) local cpu_type="$machine_hardware_name" ;;
+	esac
 
-  echo "$cpu_type"
+	echo "$cpu_type"
 }
 
 get_arch() {
-  uname | tr '[:upper:]' '[:lower:]'
+	uname | tr '[:upper:]' '[:lower:]'
 }
 
 install_version() {
